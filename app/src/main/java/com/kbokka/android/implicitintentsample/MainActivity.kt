@@ -1,11 +1,14 @@
 package com.kbokka.android.implicitintentsample
 
 import android.content.Intent
+import android.location.Location
+import android.location.LocationListener
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import java.net.URLEncoder
 
 class MainActivity : AppCompatActivity() {
@@ -34,5 +37,20 @@ class MainActivity : AppCompatActivity() {
     val uri = Uri.parse(uriStr)
     val intent = Intent(Intent.ACTION_VIEW, uri)
     startActivity(intent)
+  }
+
+  private inner class GPSLocationListener : LocationListener {
+    override fun onLocationChanged(location: Location) {
+      _latitude = location.latitude
+      _longitude = location.longitude
+      findViewById<TextView>(R.id.tvLatitude).text = _latitude.toString()
+      findViewById<TextView>(R.id.tvLongitude).text = _longitude.toString()
+    }
+
+    override fun onProviderDisabled(provider: String) {}
+
+    override fun onProviderEnabled(provider: String) {}
+
+    override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
   }
 }
