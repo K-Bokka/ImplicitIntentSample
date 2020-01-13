@@ -1,7 +1,9 @@
 package com.kbokka.android.implicitintentsample
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -11,6 +13,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import java.net.URLEncoder
 
 class MainActivity : AppCompatActivity() {
@@ -23,12 +26,43 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
 
     val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+    if (ActivityCompat.checkSelfPermission(
+        applicationContext,
+        Manifest.permission.ACCESS_FINE_LOCATION
+      ) != PackageManager.PERMISSION_GRANTED
+    ) {
+      val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+      ActivityCompat.requestPermissions(this@MainActivity, permissions, 1000)
+      return
+    }
+
     locationManager.requestLocationUpdates(
       LocationManager.GPS_PROVIDER,
       0,
       0f,
       GPSLocationListener()
     )
+  }
+
+  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    if (requestCode == 1000 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+      val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+      if (ActivityCompat.checkSelfPermission(
+          applicationContext,
+          Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED
+      ) {
+        return
+      }
+
+      locationManager.requestLocationUpdates(
+        LocationManager.GPS_PROVIDER,
+        0,
+        0f,
+        GPSLocationListener()
+      )
+    }
   }
 
   fun onMapSearchButtonClick(view: View) {
