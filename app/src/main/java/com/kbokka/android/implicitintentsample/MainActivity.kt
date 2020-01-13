@@ -1,8 +1,10 @@
 package com.kbokka.android.implicitintentsample
 
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
+import android.location.LocationManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,6 +21,14 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+
+    val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    locationManager.requestLocationUpdates(
+      LocationManager.GPS_PROVIDER,
+      0,
+      0f,
+      GPSLocationListener()
+    )
   }
 
   fun onMapSearchButtonClick(view: View) {
